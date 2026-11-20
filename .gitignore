@@ -1,0 +1,22 @@
+# backend
+backend/target/
+backend/data/
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/node_modules/.tmp/
+
+# ambiente / segredos
+.env
+.env.*
+.claude/settings.local.json
+
+# SO / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

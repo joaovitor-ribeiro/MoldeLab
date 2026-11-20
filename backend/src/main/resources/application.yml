@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  error:
+    include-stacktrace: never
+
+spring:
+  application:
+    name: moldelab
+  datasource:
+    url: jdbc:h2:file:./data/moldelab;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 9MB
+  jackson:
+    default-property-inclusion: non_null
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+moldelab:
+  cors:
+    allowed-origins: http://localhost:5173,http://127.0.0.1:5173
+  ai:
+    enabled: true
+    model: claude-opus-5-5
+    timeout-seconds: 90
