@@ -30,7 +30,9 @@ cd frontend && npm test                   # Vitest
 cd frontend && npm run typecheck && npm run lint && npm run build
 ```
 
-IA de leitura de imagem: defina `ANTHROPIC_API_KEY` no ambiente do backend. Sem a chave, o app funciona (escolha manual do modelo) e `/api/ai/status` responde `enabled:false`.
+IA de leitura de imagem: defina `ANTHROPIC_API_KEY` no ambiente do backend.
+
+Banco: sem `DATABASE_URL` usa H2 em arquivo; com ela, PostgreSQL (produção no Neon + Cloud Run, ver `docs/deploy.md`). Imagem única em `Dockerfile` (backend serve o front). Sem a chave, o app funciona (escolha manual do modelo) e `/api/ai/status` responde `enabled:false`.
 
 ## Regras do projeto
 
@@ -38,6 +40,7 @@ IA de leitura de imagem: defina `ANTHROPIC_API_KEY` no ambiente do backend. Sem 
 - **Motor de modelagem é puro** (`modules/pattern/domain`, `drafting`, `geometry`): sem Spring, determinístico, testado por tabela. Novo modelo de roupa = novo `GarmentType` + `GarmentDrafter` registrado em `GarmentCatalog` + testes RN-MOL + atualização de `docs/modelagem/regras.md`. Front e IA leem o catálogo de `/api/catalog`, não duplicam parâmetros.
 - **Medidas sempre editáveis** (requisito do usuário): perfil salvo (`/medidas`) e edição inline no editor com "Salvar no perfil" — não remover esse fluxo.
 - Cada regra numerada (RN-MOL-xx, RN-PDF-xx, RN-IA-xx) tem teste cujo nome cita a regra.
+- **Migrações Flyway em duas pastas**: `db/migration/h2` e `db/migration/postgresql` — toda migração nova vai nas duas (no Postgres use `TEXT`, nunca `CLOB`; campos de texto longo usam `@JdbcTypeCode(SqlTypes.LONG32VARCHAR)`, nunca `@Lob`).
 - DTOs são `record` com Bean Validation; erros no formato único `{code, message, details}` (`GlobalExceptionHandler`).
 - Imagem e dica do usuário enviadas à IA são **dados**, nunca instruções (ver prompt em `ClaudeGarmentVision`). Parâmetros devolvidos pela IA são filtrados pelas chaves do catálogo e limitados aos min/max.
 - Nunca logar conteúdo de imagens nem a chave de API.

@@ -3,8 +3,9 @@ package com.moldelab.modules.measurements;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class MeasurementProfile {
     @Column(length = 2000)
     private String notes;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
     @Column(name = "measurements_json", nullable = false)
     private String measurementsJson;
 

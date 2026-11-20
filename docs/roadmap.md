@@ -22,5 +22,6 @@ Perfis de medidas editáveis · 3 modelos (saia reta/evasê, godê, camiseta/ves
 ## v0.5 — Ateliê
 - [ ] Gradação (vários tamanhos sobrepostos no mesmo PDF).
 - [ ] Encaixe otimizado no tecido (nesting com rotação 0/180°, respeitando fio) e plano de corte.
-- [ ] Contas de usuário e PostgreSQL (migração: trocar URL, `CLOB`→`TEXT`).
+- [x] PostgreSQL em produção (Neon) + imagem Docker para Cloud Run — ver `docs/deploy.md`.
+- [ ] Contas de usuário (login) — necessário antes de divulgar a URL pública.
 - [ ] Biblioteca de modelos da comunidade (drafters parametrizados declarativos).

@@ -18,7 +18,7 @@ frontend (React/Vite :5173)  ──/api (proxy)──▶  backend (Spring Boot :
 | Motor de modelagem sem Spring | Determinístico, testável por tabela, reaproveitável (CLI, batch, outra UI). |
 | Geometria como polilinhas densas (mm) | Simplifica margem de costura (offset por aresta), PDF e SVG; curvas são amostradas (Bézier/arcos/Catmull-Rom). |
 | PDF gerado no servidor (PDFBox) | Escala exata em pontos, fontes padrão, nada depende do navegador. |
-| H2 em arquivo (`backend/data/`) | Zero instalação. Modo PostgreSQL ligado para migrar depois (trocar URL + `CLOB`→`TEXT`). |
+| H2 em arquivo (`backend/data/`) em dev; PostgreSQL em produção via `DATABASE_URL` | Zero instalação local; migrações por fornecedor em `db/migration/{h2,postgresql}`. Deploy: `docs/deploy.md`. |
 | Vite SPA (não Next.js) | App local sem SEO/SSR; 3D e canvas são client-side. |
 | Provador 3D paramétrico no front | Resposta instantânea ao mexer parâmetros; sem custo de servidor. |
 | IA só no backend | Chave nunca vai ao navegador; resposta validada contra o catálogo. |

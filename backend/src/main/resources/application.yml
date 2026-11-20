@@ -1,21 +1,28 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
   error:
     include-stacktrace: never
 
 spring:
   application:
     name: moldelab
+  # Sem variáveis de ambiente: H2 em arquivo (desenvolvimento local).
+  # Produção: DATABASE_URL=jdbc:postgresql://host:5432/banco?sslmode=require, DATABASE_USERNAME, DATABASE_PASSWORD
   datasource:
-    url: jdbc:h2:file:./data/moldelab;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
-    username: sa
-    password: ""
+    url: ${DATABASE_URL:jdbc:h2:file:./data/moldelab;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
+    hikari:
+      # bancos gratuitos limitam conexões; poucas bastam
+      maximum-pool-size: ${DATABASE_POOL_SIZE:5}
   jpa:
     hibernate:
       ddl-auto: validate
     open-in-view: false
   flyway:
     enabled: true
+    # {vendor} = h2 ou postgresql
+    locations: classpath:db/migration/{vendor}
   servlet:
     multipart:
       max-file-size: 8MB
@@ -31,7 +38,7 @@ management:
 
 moldelab:
   cors:
-    allowed-origins: http://localhost:5173,http://127.0.0.1:5173
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
   ai:
     enabled: true
     model: claude-opus-5-5

@@ -1,0 +1,11 @@
+.git
+**/node_modules
+frontend/dist
+backend/target
+backend/data
+_legado
+.claude
+docs
+*.log
+.env
+.env.*

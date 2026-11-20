@@ -3,8 +3,9 @@ package com.moldelab.modules.projects;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -25,19 +26,19 @@ public class Project {
     @Column(name = "profile_id")
     private UUID profileId;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
     @Column(name = "measurements_json", nullable = false)
     private String measurementsJson;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
     @Column(name = "params_json", nullable = false)
     private String paramsJson;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
     @Column(name = "seams_json", nullable = false)
     private String seamsJson;
 
-    @Lob
+    @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
     @Column(name = "sketch_data_url")
     private String sketchDataUrl;
 
