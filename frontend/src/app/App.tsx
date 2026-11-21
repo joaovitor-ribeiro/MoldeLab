@@ -5,6 +5,7 @@ import { ApiError } from '@/shared/api/client'
 import { Spinner } from '@/shared/ui/ui'
 import { Layout } from './Layout'
 import { HomePage } from './HomePage'
+import { RouteError } from './RouteError'
 
 const MeasurementsPage = lazy(() => import('@/features/measurements/MeasurementsPage'))
 const NewPatternPage = lazy(() => import('@/features/new-pattern/NewPatternPage'))
@@ -27,12 +28,20 @@ const page = (el: React.ReactNode) => (
 const router = createBrowserRouter([
   {
     element: <Layout />,
+    errorElement: <RouteError />,
     children: [
-      { path: '/', element: <HomePage /> },
-      { path: '/medidas', element: page(<MeasurementsPage />) },
-      { path: '/novo', element: page(<NewPatternPage />) },
-      { path: '/editor', element: page(<EditorPage />) },
-      { path: '/projetos', element: page(<ProjectsPage />) },
+      {
+        // erro numa página aparece dentro do layout (cabeçalho continua navegável)
+        errorElement: <RouteError />,
+        children: [
+          { path: '/', element: <HomePage /> },
+          { path: '/medidas', element: page(<MeasurementsPage />) },
+          { path: '/novo', element: page(<NewPatternPage />) },
+          { path: '/editor', element: page(<EditorPage />) },
+          { path: '/projetos', element: page(<ProjectsPage />) },
+          { path: '*', element: <RouteError notFound /> },
+        ],
+      },
     ],
   },
 ])
