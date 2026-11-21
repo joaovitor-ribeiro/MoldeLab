@@ -14,16 +14,21 @@ export class ApiError extends Error {
 
 const BASE = '/api'
 
+/** Mensagem quando a resposta não traz o JSON padrão (proxy, HTTP/2 sem statusText...). Nunca vazia. */
+export function fallbackMessage(status: number): string {
+  if (status === 0 || status >= 500) return 'Servidor indisponível. Tente de novo em instantes.'
+  if (status === 403) return 'O servidor recusou o pedido (erro 403).'
+  if (status === 404) return 'Recurso não encontrado (erro 404).'
+  if (status === 413) return 'Arquivo grande demais.'
+  return `Erro inesperado do servidor (erro ${status}).`
+}
+
 async function toError(res: Response): Promise<ApiError> {
   try {
     const body = (await res.json()) as { code?: string; message?: string; details?: Record<string, unknown> }
-    return new ApiError(res.status, body.code ?? 'HTTP_' + res.status, body.message ?? res.statusText, body.details ?? {})
+    return new ApiError(res.status, body.code ?? 'HTTP_' + res.status, body.message || fallbackMessage(res.status), body.details ?? {})
   } catch {
-    return new ApiError(
-      res.status,
-      'HTTP_' + res.status,
-      res.status >= 500 || res.status === 0 ? 'Servidor indisponível. O backend está rodando?' : res.statusText,
-    )
+    return new ApiError(res.status, 'HTTP_' + res.status, fallbackMessage(res.status))
   }
 }
 

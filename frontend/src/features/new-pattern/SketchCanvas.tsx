@@ -9,7 +9,10 @@ export interface SketchHandle {
 type Stroke = { points: [number, number][]; width: number; erase: boolean }
 
 /** Prancheta de desenho à mão livre (mouse, dedo ou caneta). */
-export const SketchCanvas = forwardRef<SketchHandle>(function SketchCanvas(_, ref) {
+export const SketchCanvas = forwardRef<SketchHandle, { onEmptyChange?: (empty: boolean) => void }>(function SketchCanvas(
+  { onEmptyChange },
+  ref,
+) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [strokes, setStrokes] = useState<Stroke[]>([])
   const [width, setWidth] = useState(4)
@@ -44,6 +47,9 @@ export const SketchCanvas = forwardRef<SketchHandle>(function SketchCanvas(_, re
   }, [])
 
   useEffect(() => redraw(strokes), [strokes, redraw])
+
+  const empty = !strokes.some((s) => !s.erase)
+  useEffect(() => onEmptyChange?.(empty), [empty, onEmptyChange])
 
   useImperativeHandle(ref, () => ({
     toDataUrl: () => (strokes.some((s) => !s.erase) ? canvasRef.current?.toDataURL('image/png') ?? null : null),

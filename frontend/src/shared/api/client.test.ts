@@ -25,4 +25,11 @@ describe('api client', () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { status: 204 })))
     await expect(apiSend('DELETE', '/profiles/1')).resolves.toBeUndefined()
   })
+
+  it('resposta sem JSON (ex.: 403 do proxy) nunca vira mensagem vazia', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('Invalid CORS request', { status: 403, statusText: '' })))
+    const err = (await apiSend('POST', '/ai/analyze-garment', {}).catch((e: unknown) => e)) as ApiError
+    expect(err.status).toBe(403)
+    expect(err.message).toMatch(/403/)
+  })
 })
