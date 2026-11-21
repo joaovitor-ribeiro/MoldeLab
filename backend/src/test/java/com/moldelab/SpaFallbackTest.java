@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /** Frontend servido pelo backend (imagem Docker): rotas do React caem no index.html; API não. */
@@ -42,5 +43,17 @@ class SpaFallbackTest {
         mvc.perform(get("/api/nao-existe")).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("NOT_FOUND"));
         mvc.perform(get("/api/catalog")).andExpect(status().isOk());
+    }
+
+    /** Atrás do proxy do Cloud Run (HTTPS → HTTP), POST da mesma origem não pode virar 403 de CORS. */
+    @Test
+    void postDaMesmaOrigemAtrasDeProxyHttpsNaoEhBloqueado() throws Exception {
+        mvc.perform(post("/api/patterns/draft")
+                        .with(r -> { r.setScheme("http"); r.setServerName("moldelab-x.a.run.app"); r.setServerPort(8080); return r; })
+                        .header("Host", "moldelab-x.a.run.app")
+                        .header("X-Forwarded-Proto", "https")
+                        .header("Origin", "https://moldelab-x.a.run.app")
+                        .contentType("application/json").content("{}"))
+                .andExpect(status().isBadRequest()); // validação do corpo, não 403
     }
 }

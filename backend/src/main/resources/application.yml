@@ -1,5 +1,8 @@
 server:
   port: ${PORT:8080}
+  # Cloud Run termina o HTTPS e repassa em HTTP com X-Forwarded-Proto/Host. Sem isto o Spring acha que
+  # https://<app>.run.app é outra origem e recusa POST/PUT/DELETE do navegador com 403 "Invalid CORS request".
+  forward-headers-strategy: framework
   error:
     include-stacktrace: never
 
